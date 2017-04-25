@@ -45,8 +45,8 @@ class TestNumpyITKMemoryviewInterface(unittest.TestCase):
         scalarImage.SetRegions(region);
         scalarImage.Allocate();
 
-        scalarndarr           = itk.PyBuffer[ScalarImageType].GetArrayFromImage(scalarImage)
-        convertedscalarImage  = itk.PyBuffer[ScalarImageType].GetImageFromArray(scalarndarr)
+        scalarndarr           = itk.PyBuffer[ScalarImageType].GetArrayViewFromImage(scalarImage)
+        convertedscalarImage  = itk.PyBuffer[ScalarImageType].GetImageViewFromArray(scalarndarr)
 
         ScalarDiffFilterType  = itk.ComparisonImageFilter[ScalarImageType, ScalarImageType]
         ScalarDiffFilter      = ScalarDiffFilterType.New()
@@ -74,9 +74,9 @@ class TestNumpyITKMemoryviewInterface(unittest.TestCase):
         vectorImage.SetRegions(region);
         vectorImage.SetNumberOfComponentsPerPixel(3);
         vectorImage.Allocate();
-        vectorndarr           = itk.PyBuffer[VectorImageType].GetArrayFromImage(vectorImage)
+        vectorndarr           = itk.PyBuffer[VectorImageType].GetArrayViewFromImage(vectorImage)
 
-        convertedvectorImage  = itk.PyBuffer[VectorImageType].GetImageFromArray(vectorndarr, isVector=True)
+        convertedvectorImage  = itk.PyBuffer[VectorImageType].GetImageViewFromArray(vectorndarr, isVector=True)
 
     def test_NumPyBridge_itkRGBImage(self):
         "Try to convert an RGB ITK image to NumPy array view"
@@ -94,9 +94,9 @@ class TestNumpyITKMemoryviewInterface(unittest.TestCase):
         rgbImage              = RGBImageType.New()
         rgbImage.SetRegions(region);
         rgbImage.Allocate();
-        rgbndarr              = itk.PyBuffer[RGBImageType].GetArrayFromImage(rgbImage)
+        rgbndarr              = itk.PyBuffer[RGBImageType].GetArrayViewFromImage(rgbImage)
 
-        convertedRGBImage     = itk.PyBuffer[RGBImageType].GetImageFromArray(rgbndarr, isVector=True)
+        convertedRGBImage     = itk.PyBuffer[RGBImageType].GetImageViewFromArray(rgbndarr, isVector=True)
 
     def test_NumPyBridge_itkRGBAImage(self):
         "Try to convert an RGBA ITK image to NumPy array view"
@@ -114,9 +114,9 @@ class TestNumpyITKMemoryviewInterface(unittest.TestCase):
         rgbaImage             = RGBAImageType.New()
         rgbaImage.SetRegions(region);
         rgbaImage.Allocate();
-        rgbandarr             = itk.PyBuffer[RGBAImageType].GetArrayFromImage(rgbaImage)
+        rgbandarr             = itk.PyBuffer[RGBAImageType].GetArrayViewFromImage(rgbaImage)
 
-        convertedRGBAImage    = itk.PyBuffer[RGBAImageType].GetImageFromArray(rgbandarr, isVector=True)
+        convertedRGBAImage    = itk.PyBuffer[RGBAImageType].GetImageViewFromArray(rgbandarr, isVector=True)
 
     def test_NumPyBridge_itkVectorPixelImage(self):
         "Try to convert an ITK image with vector pixels to NumPy array view"
@@ -134,9 +134,9 @@ class TestNumpyITKMemoryviewInterface(unittest.TestCase):
         vectorImage           = VectorImageType.New()
         vectorImage.SetRegions(region);
         vectorImage.Allocate();
-        vectorndarr           = itk.PyBuffer[VectorImageType].GetArrayFromImage(vectorImage)
+        vectorndarr           = itk.PyBuffer[VectorImageType].GetArrayViewFromImage(vectorImage)
 
-        convertedVectorImage  = itk.PyBuffer[VectorImageType].GetImageFromArray(vectorndarr, isVector=True)
+        convertedVectorImage  = itk.PyBuffer[VectorImageType].GetImageViewFromArray(vectorndarr, isVector=True)
 
     def test_NumPyBridge_FortranOrder(self):
         "Try to convert an ITK image to / from a NumPy array with Fortran order"
@@ -149,7 +149,7 @@ class TestNumpyITKMemoryviewInterface(unittest.TestCase):
         arr = np.arange(6, dtype=dtype)
         arrC = np.reshape(arr, (2, 3), order='C')
         assert(arrC.flags.c_contiguous)
-        image = itk.PyBuffer[ImageType].GetImageFromArray(arrC)
+        image = itk.PyBuffer[ImageType].GetImageViewFromArray(arrC)
 
         index = itk.Index[Dimension]()
         index[0] = 0
@@ -164,7 +164,7 @@ class TestNumpyITKMemoryviewInterface(unittest.TestCase):
 
         arrFortran = np.reshape(arr, (3, 2), order='F')
         assert(arrFortran.flags.f_contiguous)
-        image = itk.PyBuffer[ImageType].GetImageFromArray(arrFortran)
+        image = itk.PyBuffer[ImageType].GetImageViewFromArray(arrFortran)
         index[0] = 0
         index[1] = 0
         assert(image.GetPixel(index) == 0)

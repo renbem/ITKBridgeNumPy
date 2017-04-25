@@ -37,8 +37,8 @@ class TestNumpyVnlMemoryviewInterface(unittest.TestCase):
         v1.put(1,2)
         v1.put(2,4)
         v1.put(3,5)
-        arr = itk.PyVnl.F.GetArrayFromVnlVector(v1)
-        v2=itk.PyVnl.F.GetVnlVectorFromArray(arr)
+        arr = itk.PyVnl.F.GetArrayViewFromVnlVector(v1)
+        v2=itk.PyVnl.F.GetVnlVectorViewFromArray(arr)
         self.assertEqual(v1.size(), v2.size())
         # Compute difference between the two vectors
         diff = 0.0
@@ -53,8 +53,8 @@ class TestNumpyVnlMemoryviewInterface(unittest.TestCase):
         m1.fill(0)
         m1.put(1,2,1.3)
         m1.put(1,0,2)
-        arr = itk.PyVnl.F.GetArrayFromVnlMatrix(m1)
-        m2 = itk.PyVnl.F.GetVnlMatrixFromArray(arr)
+        arr = itk.PyVnl.F.GetArrayViewFromVnlMatrix(m1)
+        m2 = itk.PyVnl.F.GetVnlMatrixViewFromArray(arr)
         # Check that matrices have the same numer of elements
         self.assertEqual(m1.size(), m2.size())
         # Check that the matrices axes dimensions have not been flipped or changed

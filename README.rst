@@ -9,7 +9,7 @@ This is a port from the original WrapITK PyBuffer to an ITKv4 module.
 Differences from the original PyBuffer:
 
 - Support for VectorImage's
-- Option to not swap the axes (only for GetArrayFromImage)
+- Option to not swap the axes (only for GetArrayViewFromImage)
 - Tests
 - Based on the `Python Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_ -- does not require NumPy to build.
 
@@ -22,7 +22,7 @@ module.  To enable it, set::
 in ITK's CMake build configuration. In ITK 4.12 and later, this module is
 enabled by default when `ITK_WRAP_PYTHON` is enabled.
 
-To convert an ITK image to a NumPy array::
+To get a view of an ITK image in a NumPy array::
 
   import itk
 
@@ -37,9 +37,9 @@ To convert an ITK image to a NumPy array::
   image.SetRegions(region)
   image.Allocate()
 
-  arr = itk.PyBuffer[ImageType].GetArrayFromImage(image)
+  arr = itk.PyBuffer[ImageType].GetArrayViewFromImage(image)
 
-To convert a NumPy array to an ITK image::
+To get a view of a NumPy array in an ITK image::
 
   import numpy as np
   import itk
@@ -49,9 +49,9 @@ To convert a NumPy array to an ITK image::
   ImageType = itk.Image[PixelType, Dimension]
 
   arr = np.zeros((100, 100, 100), np.float32)
-  image = itk.PyBuffer[ImageType].GetImageFromArray(arr)
+  image = itk.PyBuffer[ImageType].GetImageViewFromArray(arr)
 
-It is also possible to convert VNL matrices and arrays to NumPy arrays and
+It is also possible to get views of VNL matrices and arrays from NumPy arrays and
 back::
 
   import numpy as np
@@ -60,17 +60,17 @@ back::
   ElementType = itk.ctype('float')
   vector = itk.vnl_vector[ElementType]()
   vector.set_size(8)
-  arr = itk.PyVnl[ElementType].GetArrayFromVnlVector(vector)
+  arr = itk.PyVnl[ElementType].GetArrayViewFromVnlVector(vector)
 
   matrix = itk.vnl_matrix[ElementType]()
   matrix.set_size(3, 4)
-  arr = itk.PyVnl[ElementType].GetArrayFromVnlMatrix(matrix)
+  arr = itk.PyVnl[ElementType].GetArrayViewFromVnlMatrix(matrix)
 
   arr = np.zeros((100,), np.float32)
-  vector = itk.PyVnl[ElementType].GetVnlVectorFromArray(arr)
+  vector = itk.PyVnl[ElementType].GetVnlVectorViewFromArray(arr)
 
   arr = np.zeros((100, 100), np.float32)
-  matrix = itk.PyVnl[ElementType].GetVnlMatrixFromArray(arr)
+  matrix = itk.PyVnl[ElementType].GetVnlMatrixViewFromArray(arr)
 
 .. warning::
 
@@ -83,3 +83,20 @@ back::
   image object must be available to use its NumPy array view. Using an array
   view after its source image has been deleted can results in corrupt values
   or a segfault.
+  Modifying the content of a NumPy view of an ITK or VNL object will result
+  in implicitly copy the data from the original ITK or VNL object before
+  modification. The modification will only be visible in the now copy
+  and not in original object. The memory is not shared anymore between
+  ITK or VNL and NumPy. However, modifying the content of an ITK or VNL view
+  of a NumPy object will result in modifying the original NumPy object. No
+  copy is created and the memory is still shared after modification.
+
+It is possible to modify the content of an ITK or VNL object from a NumPy
+view using 'setfield'::
+
+  arr_image=itk.GetArrayFromImage(image)
+  cp_arr = arr_image.copy()
+  # Modify copy of array
+  # hack, hack, hack
+  # Copy modified array into image
+  arr_image.setfield(cp_arr,arr_image.dtype)

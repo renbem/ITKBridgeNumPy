@@ -34,7 +34,7 @@ M = []
 X = range(n)
 for i in range(n):
     inputNumpyVolume += 1
-    inputVolume = converter.GetImageFromArray(inputNumpyVolume)
+    inputVolume = converter.GetImageViewFromArray(inputNumpyVolume)
     M.append(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
 
 if M[5] - M[4] > 1000:
@@ -46,13 +46,13 @@ M = []
 X = [x + n for x in range(n)]
 for i in range(n):
     inputNumpyVolume = np.ones([100,100,100], dtype=np.float32)
-    inputVolume = converter.GetImageFromArray(inputNumpyVolume)
+    inputVolume = converter.GetImageViewFromArray(inputNumpyVolume)
     M.append(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
 if M[5] - M[4] > 1000:
     print('Memory leak!')
     sys.exit(1)
 
-# creating new numpy volume but not calling converter.GetImageFromArray(inputNumpyVolume)
+# creating new numpy volume but not calling converter.GetImageViewFromArray(inputNumpyVolume)
 M = []
 X = [x + 2*n for x in range(n)]
 for i in range(n):

@@ -5,13 +5,17 @@
 %extend itkPyBuffer@PyBufferTypes@{
     %pythoncode %{
 
-    def GetArrayFromImage(image, keepAxes=False):
-        """Get a NumPy array from a ITK Image.
+    def GetArrayViewFromImage(image, keepAxes=False):
+        """Get a NumPy array view of a ITK Image.
 
         When *keepAxes* is *False*, the NumPy array will have C-order
         indexing. This is the reverse of how indices are specified in ITK,
         i.e. k,j,i versus i,j,k. However C-order indexing is expected by most
         algorithms in NumPy / SciPy.
+
+        Warning: No copy of the data is performed. Using an array
+        view after its source image has been deleted can results in corrupt values
+        or a segfault.
         """
 
         if not HAVE_NUMPY:
@@ -31,16 +35,16 @@
 
         pixelType     = "@PixelType@"
         numpydatatype = _get_numpy_pixelid(pixelType)
-        memview       = itkPyBuffer@PyBufferTypes@._GetArrayFromImage(image)
+        memview       = itkPyBuffer@PyBufferTypes@._GetArrayViewFromImage(image)
         itkndarrview  = numpy.asarray(memview).view(dtype = numpydatatype).reshape(shape).view(itkndarray)
         itkndarrview.SetConvertedFlag(converted = True)
 
         return itkndarrview
 
-    GetArrayFromImage = staticmethod(GetArrayFromImage)
+    GetArrayViewFromImage = staticmethod(GetArrayViewFromImage)
 
-    def GetImageFromArray(ndarr, isVector=False):
-        """Get an ITK Image from a NumPy array.
+    def GetImageViewFromArray(ndarr, isVector=False):
+        """Get an ITK Image view of a NumPy array.
 
         If isVector is True, then a 3D array will be treated as a 2D vector image,
         otherwise it will be treated as a 3D image.
@@ -54,6 +58,10 @@
         inverts the indexing scheme, the Image representation will be the
         same for an array and its transpose. If flipping is desired, see
         *numpy.reshape*.
+
+        Warning: No copy of the data is performed. Using an image
+        view after its source array has been deleted can results in corrupt values
+        or a segfault.
         """
 
         if not HAVE_NUMPY:
@@ -63,13 +71,13 @@
             "Only arrays of 2, 3 or 4 dimensions are supported."
 
         if ( ndarr.ndim == 3 and isVector ) or (ndarr.ndim == 4):
-            imgview = itkPyBuffer@PyBufferTypes@._GetImageFromArray( ndarr, ndarr.shape[-2::-1], ndarr.shape[-1] )
+            imgview = itkPyBuffer@PyBufferTypes@._GetImageViewFromArray( ndarr, ndarr.shape[-2::-1], ndarr.shape[-1] )
         elif ndarr.ndim in ( 2, 3 ):
-            imgview = itkPyBuffer@PyBufferTypes@._GetImageFromArray( ndarr, ndarr.shape[::-1], 1)
+            imgview = itkPyBuffer@PyBufferTypes@._GetImageViewFromArray( ndarr, ndarr.shape[::-1], 1)
 
         return imgview
 
-    GetImageFromArray = staticmethod(GetImageFromArray)
+    GetImageViewFromArray = staticmethod(GetImageViewFromArray)
 
   %}
 };

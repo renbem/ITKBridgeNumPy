@@ -5,8 +5,13 @@
 %extend itkPyVnl@PyVnlTypes@{
     %pythoncode %{
 
-    def GetArrayFromVnlVector(vnl_vector):
-        """  Get a NumPy array from a Vnl vector.  """
+    def GetArrayViewFromVnlVector(vnl_vector):
+        """  Get a NumPy array view of a Vnl vector.
+
+        Warning: No copy of the data is performed. Using an array
+        view after its source vector has been deleted can results in corrupt values
+        or a segfault.
+        """
 
         if not HAVE_NUMPY:
             raise ImportError('Numpy not available.')
@@ -16,16 +21,21 @@
 
         pixelType     = "@PixelType@"
         numpydatatype = _get_numpy_pixelid(pixelType)
-        memview       = itkPyVnl@PyVnlTypes@._GetArrayFromVnlVector(vnl_vector)
+        memview       = itkPyVnl@PyVnlTypes@._GetArrayViewFromVnlVector(vnl_vector)
         itkndarrview  = numpy.asarray(memview).view(dtype = numpydatatype).reshape(shape).view(itkndarray)
         itkndarrview.SetConvertedFlag(converted = True)
 
         return itkndarrview
 
-    GetArrayFromVnlVector = staticmethod(GetArrayFromVnlVector)
+    GetArrayViewFromVnlVector = staticmethod(GetArrayViewFromVnlVector)
 
-    def GetVnlVectorFromArray(ndarr):
-        """ Get a Vnl vector from a NumPy array. """
+    def GetVnlVectorViewFromArray(ndarr):
+        """ Get a Vnl vector view of a NumPy array.
+
+        Warning: No copy of the data is performed. Using a VNL vector
+        view after its source array has been deleted can results in corrupt values
+        or a segfault.
+        """
 
         if not HAVE_NUMPY:
             raise ImportError('Numpy not available.')
@@ -33,14 +43,19 @@
         assert ndarr.ndim == 1 , \
             "Only arrays of 1 dimension are supported."
 
-        vecview = itkPyVnl@PyVnlTypes@._GetVnlVectorFromArray( ndarr, ndarr.shape)
+        vecview = itkPyVnl@PyVnlTypes@._GetVnlVectorViewFromArray( ndarr, ndarr.shape)
 
         return vecview
 
-    GetVnlVectorFromArray = staticmethod(GetVnlVectorFromArray)
+    GetVnlVectorViewFromArray = staticmethod(GetVnlVectorViewFromArray)
 
-    def GetArrayFromVnlMatrix(vnl_matrix):
-        """  Get a NumPy array from a VNL matrix.  """
+    def GetArrayViewFromVnlMatrix(vnl_matrix):
+        """  Get a NumPy array view of a VNL matrix.
+
+        Warning: No copy of the data is performed. Using an array
+        view after its source matrix has been deleted can results in corrupt values
+        or a segfault.
+        """
 
         if not HAVE_NUMPY:
             raise ImportError('Numpy not available.')
@@ -52,16 +67,20 @@
 
         pixelType     = "@PixelType@"
         numpydatatype = _get_numpy_pixelid(pixelType)
-        memview       = itkPyVnl@PyVnlTypes@._GetArrayFromVnlMatrix(vnl_matrix)
+        memview       = itkPyVnl@PyVnlTypes@._GetArrayViewFromVnlMatrix(vnl_matrix)
         itkndarrview  = numpy.asarray(memview).view(dtype = numpydatatype).reshape(shape).view(itkndarray)
         itkndarrview.SetConvertedFlag(converted = True)
 
         return itkndarrview
 
-    GetArrayFromVnlMatrix = staticmethod(GetArrayFromVnlMatrix)
+    GetArrayViewFromVnlMatrix = staticmethod(GetArrayViewFromVnlMatrix)
 
-    def GetVnlMatrixFromArray(ndarr):
-        """ Get a VNL Matrix from a NumPy array.
+    def GetVnlMatrixViewFromArray(ndarr):
+        """ Get a VNL Matrix view of a NumPy array.
+
+        Warning: No copy of the data is performed. Using a VNL matrix
+        view after its source array has been deleted can results in corrupt values
+        or a segfault.
         """
         
         if not HAVE_NUMPY:
@@ -70,11 +89,11 @@
         assert ndarr.ndim == 2 , \
             "Only arrays of 2 dimensions are supported."
 
-        matview = itkPyVnl@PyVnlTypes@._GetVnlMatrixFromArray( ndarr, ndarr.shape)
+        matview = itkPyVnl@PyVnlTypes@._GetVnlMatrixViewFromArray( ndarr, ndarr.shape)
 
         return matview
 
-    GetVnlMatrixFromArray = staticmethod(GetVnlMatrixFromArray)
+    GetVnlMatrixViewFromArray = staticmethod(GetVnlMatrixViewFromArray)
 
   %}
 };

@@ -27,7 +27,7 @@ namespace itk
 template<class TElement>
 PyObject *
 PyVnl<TElement>
-::_GetArrayFromVnlVector( VectorType * vector)
+::_GetArrayViewFromVnlVector( VectorType * vector)
 {
   PyObject *                  memoryView    = NULL;
   Py_buffer                   pyBuffer;
@@ -60,7 +60,7 @@ PyVnl<TElement>
 template<class TElement>
 const typename PyVnl<TElement>::VectorType
 PyVnl<TElement>
-::_GetVnlVectorFromArray( PyObject *arr, PyObject *shape)
+::_GetVnlVectorViewFromArray( PyObject *arr, PyObject *shape)
 {
   PyObject *                  obj           = NULL;
   PyObject *                  shapeseq      = NULL;
@@ -116,7 +116,7 @@ PyVnl<TElement>
 template<class TElement>
 PyObject *
 PyVnl<TElement>
-::_GetArrayFromVnlMatrix( MatrixType * matrix)
+::_GetArrayViewFromVnlMatrix( MatrixType * matrix)
 {
   PyObject *                  memoryView    = NULL;
   Py_buffer                   pyBuffer;
@@ -149,7 +149,7 @@ PyVnl<TElement>
 template<class TElement>
 const typename PyVnl<TElement>::MatrixType
 PyVnl<TElement>
-::_GetVnlMatrixFromArray( PyObject *arr, PyObject *shape)
+::_GetVnlMatrixViewFromArray( PyObject *arr, PyObject *shape)
 {
   PyObject *                  obj           = NULL;
   PyObject *                  shapeseq      = NULL;
