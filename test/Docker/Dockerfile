@@ -27,7 +27,7 @@ RUN mkdir -p /usr/src/ITKBridgeNumPy-build
 WORKDIR /usr/src
 
 # master 2016-09-20
-ENV ITK_GIT_TAG a1ad10b3b7269e494e96cfbbec64826b752de75f
+ENV ITK_GIT_TAG bc0c835d50707cbf3b808f98d8e22295ef50c242
 RUN git clone https://itk.org/ITK.git && \
   cd ITK && \
   git checkout ${ITK_GIT_TAG} && \
