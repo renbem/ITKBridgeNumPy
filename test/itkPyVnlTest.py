@@ -45,6 +45,14 @@ class TestNumpyVnlMemoryviewInterface(unittest.TestCase):
         for ii in range(0,v1.size()):
           diff += abs(v1.get(ii)-v2.get(ii))
         self.assertEqual(0, diff)
+        
+        # test deep copy
+        arr_cp = itk.PyVnl.F.GetArrayFromVnlVector(v1)
+        v1.put(0,0)
+        self.assertNotEqual(v1.get(0),arr_cp[0])
+        v2_cp=itk.PyVnl.F.GetVnlVectorFromArray(arr_cp)
+        arr_cp[0]=1
+        self.assertNotEqual(v2_cp.get(0),arr_cp[0])
 
     def test_NumPyBridge_VnlMatrix(self):
         "Try to convert a vnl matrix into a Numpy array and back."
@@ -66,6 +74,15 @@ class TestNumpyVnlMemoryviewInterface(unittest.TestCase):
           for jj in range(m1.cols()):
             diff += abs(m1.get(ii,jj)-m2.get(ii,jj))
         self.assertEqual(0, diff)
+        
+        # test deep copy
+        arr_cp = itk.PyVnl.F.GetArrayFromVnlMatrix(m1)
+        m1.put(0,0,1)
+        self.assertNotEqual(m1.get(0,0), arr_cp[0,0])
+        m2 = itk.PyVnl.F.GetVnlMatrixViewFromArray(arr_cp)
+        arr_cp[0,0]=2
+        self.assertNotEqual(m2.get(0,0), arr_cp[0,0])
+
 
 
 if __name__ == '__main__':

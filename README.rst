@@ -83,20 +83,3 @@ back::
   image object must be available to use its NumPy array view. Using an array
   view after its source image has been deleted can results in corrupt values
   or a segfault.
-  Modifying the content of a NumPy view of an ITK or VNL object will result
-  in implicitly copy the data from the original ITK or VNL object before
-  modification. The modification will only be visible in the now copy
-  and not in original object. The memory is not shared anymore between
-  ITK or VNL and NumPy. However, modifying the content of an ITK or VNL view
-  of a NumPy object will result in modifying the original NumPy object. No
-  copy is created and the memory is still shared after modification.
-
-It is possible to modify the content of an ITK or VNL object from a NumPy
-view using 'setfield'::
-
-  arr_image=itk.GetArrayFromImage(image)
-  cp_arr = arr_image.copy()
-  # Modify copy of array
-  # hack, hack, hack
-  # Copy modified array into image
-  arr_image.setfield(cp_arr,arr_image.dtype)

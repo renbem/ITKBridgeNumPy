@@ -36,10 +36,9 @@
         pixelType     = "@PixelType@"
         numpydatatype = _get_numpy_pixelid(pixelType)
         memview       = itkPyBuffer@PyBufferTypes@._GetArrayViewFromImage(image)
-        itkndarrview  = numpy.asarray(memview).view(dtype = numpydatatype).reshape(shape).view(itkndarray)
-        itkndarrview.SetConvertedFlag(converted = True)
+        ndarrview  = numpy.asarray(memview).view(dtype = numpydatatype).reshape(shape).view(numpy.ndarray)
 
-        return itkndarrview
+        return ndarrview
 
     GetArrayViewFromImage = staticmethod(GetArrayViewFromImage)
 
@@ -49,7 +48,7 @@
         This is a deep copy of the image buffer and is completely safe and without potential side effects.
         """
 
-        arrayView = GetArrayViewFromImage(image)
+        arrayView = itkPyBuffer@PyBufferTypes@.GetArrayViewFromImage(image)
 
         # perform deep copy of the image buffer
         return numpy.array(arrayView, copy=True)
@@ -95,7 +94,7 @@
     def GetImageFromArray(ndarr, isVector=False):
         """Get an ITK Image of a NumPy array.
 
-        This is a deep copy of the NumPy array buffer and is copletely safe without potential
+        This is a deep copy of the NumPy array buffer and is completely safe without potential
         side effects.
 
         If isVector is True, then a 3D array will be treated as a 2D vector image,
@@ -115,7 +114,7 @@
         # perform deep copy of the array buffer
         array_copy = numpy.array(ndarr)
 
-        image = GetImageViewFromArray(array_copy, isVector)
+        image = itkPyBuffer@PyBufferTypes@.GetImageViewFromArray(array_copy, isVector)
 
         # attaches the copy of the array to the image to avoid releasing memory
         # when leaving current scope.

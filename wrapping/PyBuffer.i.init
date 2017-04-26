@@ -27,28 +27,4 @@ def _get_numpy_pixelid(itk_Image_type):
         return _np_itk[itk_Image_type]
     except KeyError as e:
         raise e
-
-
-class itkndarray(numpy.ndarray):
-    """ A customized NumPy.ndarray for ITK Image."""
-
-    bConverted = False
-
-    def SetConvertedFlag(self, converted = True):
-        self.bConverted = converted
-
-    def __setitem__(self, item, to):
-        if self.bConverted == True:
-            temp            = numpy.array(self, copy = True)
-            self.data       = temp.data
-            self.bConverted = False
-        super(itkndarray, self).__setitem__(item, to)
-
-    def itemset(self, *args):
-        if self.bConverted == True:
-            temp            = numpy.array(self, copy = True)
-            self.data       = temp.data
-            self.bConverted = False
-        super(itkndarray, self).itemset(*args)
-
 %}

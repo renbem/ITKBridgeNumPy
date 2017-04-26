@@ -58,6 +58,32 @@ class TestNumpyITKMemoryviewInterface(unittest.TestCase):
 
         self.assertEqual(0, diff)
 
+    def test_NumPyBridge_itkScalarImageDeepCopy(self):
+        "Try to convert all pixel types to NumPy array view with a deep copy"
+
+        Dimension             = 3
+        ScalarImageType       = itk.Image[itk.UC, Dimension]
+        RegionType            = itk.ImageRegion[Dimension]
+
+        region                = RegionType()
+        region.SetSize(0, 30);
+        region.SetSize(1, 20);
+        region.SetSize(2, 10);
+
+        scalarImage           = ScalarImageType.New()
+        scalarImage.SetRegions(region);
+        scalarImage.Allocate();
+        scalarImage.FillBuffer(0)
+        
+        # Check that scalarndarr is not a view, but a deep copy
+        scalarndarr           = itk.PyBuffer[ScalarImageType].GetArrayFromImage(scalarImage)
+        scalarImage.SetPixel([0,0,0],1)
+        self.assertNotEqual(scalarImage.GetPixel([0,0,0]), scalarndarr[0,0,0])
+        
+        convertedscalarImage  = itk.PyBuffer[ScalarImageType].GetImageFromArray(scalarndarr)
+        scalarndarr[0,0,0] = 2
+        self.assertNotEqual(convertedscalarImage.GetPixel([0,0,0]), scalarndarr[0,0,0])
+
     def test_NumPyBridge_itkVectorImage(self):
         "Try to convert all pixel types to NumPy array view"
 
