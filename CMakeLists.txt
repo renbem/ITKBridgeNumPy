@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 2.8.9)
 project(BridgeNumPy)
-if(NOT ITK_SOURCE_DIR)
-  include(itk-module-init.cmake)
-endif()
 
 set(BridgeNumPy_SYSTEM_INCLUDE_DIRS "${PYTHON_INCLUDE_DIR}")
 
