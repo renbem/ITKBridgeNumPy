@@ -5,8 +5,13 @@
 %extend itkPyVnl@PyVnlTypes@{
     %pythoncode %{
 
-    def GetArrayFromVnlVector(vnl_vector):
-        """  Get a NumPy array from a Vnl vector.  """
+    def GetArrayViewFromVnlVector(vnl_vector):
+        """  Get a NumPy array view of a VNL vector.
+
+        Warning: No copy of the data is performed. Using an array
+        view after its source vector has been deleted can results in corrupt values
+        or a segfault.
+        """
 
         if not HAVE_NUMPY:
             raise ImportError('Numpy not available.')
@@ -16,16 +21,33 @@
 
         pixelType     = "@PixelType@"
         numpydatatype = _get_numpy_pixelid(pixelType)
-        memview       = itkPyVnl@PyVnlTypes@._GetArrayFromVnlVector(vnl_vector)
-        itkndarrview  = numpy.asarray(memview).view(dtype = numpydatatype).reshape(shape).view(itkndarray)
-        itkndarrview.SetConvertedFlag(converted = True)
+        memview       = itkPyVnl@PyVnlTypes@._GetArrayViewFromVnlVector(vnl_vector)
+        ndarrview  = numpy.asarray(memview).view(dtype = numpydatatype).reshape(shape).view(numpy.ndarray)
 
-        return itkndarrview
+        return ndarrview
+
+    GetArrayViewFromVnlVector = staticmethod(GetArrayViewFromVnlVector)
+
+    def GetArrayFromVnlVector(vnl_vector):
+        """Get a NumPy ndarray from VNL Vector.
+
+        This is a deep copy of the VNL vector and is completely safe and without potential side effects.
+        """
+
+        arrayView = itkPyVnl@PyVnlTypes@.GetArrayViewFromVnlVector(vnl_vector)
+
+        # perform deep copy of the buffer
+        return numpy.array(arrayView, copy=True)
 
     GetArrayFromVnlVector = staticmethod(GetArrayFromVnlVector)
 
-    def GetVnlVectorFromArray(ndarr):
-        """ Get a Vnl vector from a NumPy array. """
+    def GetVnlVectorViewFromArray(ndarr):
+        """ Get a Vnl vector view of a NumPy array.
+
+        Warning: No copy of the data is performed. Using a VNL vector
+        view after its source array has been deleted can results in corrupt values
+        or a segfault.
+        """
 
         if not HAVE_NUMPY:
             raise ImportError('Numpy not available.')
@@ -33,14 +55,38 @@
         assert ndarr.ndim == 1 , \
             "Only arrays of 1 dimension are supported."
 
-        vecview = itkPyVnl@PyVnlTypes@._GetVnlVectorFromArray( ndarr, ndarr.shape)
+        vecview = itkPyVnl@PyVnlTypes@._GetVnlVectorViewFromArray( ndarr, ndarr.shape)
 
         return vecview
 
+    GetVnlVectorViewFromArray = staticmethod(GetVnlVectorViewFromArray)
+
+    def GetVnlVectorFromArray(ndarr):
+        """Get a VNL vector from a NumPy array.
+
+        This is a deep copy of the NumPy array buffer and is completely safe without potential
+        side effects.
+        """
+
+        # perform deep copy of the array buffer
+        array_copy = numpy.array(ndarr)
+
+        vnl_vector = itkPyVnl@PyVnlTypes@.GetVnlVectorViewFromArray(array_copy)
+
+        # attaches the copy of the array to the vector to avoid releasing memory
+        # when leaving current scope.
+        vnl_vector._ndarr = array_copy
+        return vnl_vector
+
     GetVnlVectorFromArray = staticmethod(GetVnlVectorFromArray)
 
-    def GetArrayFromVnlMatrix(vnl_matrix):
-        """  Get a NumPy array from a VNL matrix.  """
+    def GetArrayViewFromVnlMatrix(vnl_matrix):
+        """  Get a NumPy array view of a VNL matrix.
+
+        Warning: No copy of the data is performed. Using an array
+        view after its source matrix has been deleted can results in corrupt values
+        or a segfault.
+        """
 
         if not HAVE_NUMPY:
             raise ImportError('Numpy not available.')
@@ -52,16 +98,33 @@
 
         pixelType     = "@PixelType@"
         numpydatatype = _get_numpy_pixelid(pixelType)
-        memview       = itkPyVnl@PyVnlTypes@._GetArrayFromVnlMatrix(vnl_matrix)
-        itkndarrview  = numpy.asarray(memview).view(dtype = numpydatatype).reshape(shape).view(itkndarray)
-        itkndarrview.SetConvertedFlag(converted = True)
+        memview       = itkPyVnl@PyVnlTypes@._GetArrayViewFromVnlMatrix(vnl_matrix)
+        ndarrview  = numpy.asarray(memview).view(dtype = numpydatatype).reshape(shape).view(numpy.ndarray)
 
-        return itkndarrview
+        return ndarrview
+
+    GetArrayViewFromVnlMatrix = staticmethod(GetArrayViewFromVnlMatrix)
+    
+    def GetArrayFromVnlMatrix(vnl_matrix):
+        """Get a NumPy ndarray from VNL matrix.
+
+        This is a deep copy of the VNL matrix and is completely safe and without potential side effects.
+        """
+
+        arrayView = itkPyVnl@PyVnlTypes@.GetArrayViewFromVnlMatrix(vnl_matrix)
+
+        # perform deep copy of the buffer
+        return numpy.array(arrayView, copy=True)
 
     GetArrayFromVnlMatrix = staticmethod(GetArrayFromVnlMatrix)
+    
 
-    def GetVnlMatrixFromArray(ndarr):
-        """ Get a VNL Matrix from a NumPy array.
+    def GetVnlMatrixViewFromArray(ndarr):
+        """ Get a VNL Matrix view of a NumPy array.
+
+        Warning: No copy of the data is performed. Using a VNL matrix
+        view after its source array has been deleted can results in corrupt values
+        or a segfault.
         """
         
         if not HAVE_NUMPY:
@@ -70,9 +133,28 @@
         assert ndarr.ndim == 2 , \
             "Only arrays of 2 dimensions are supported."
 
-        matview = itkPyVnl@PyVnlTypes@._GetVnlMatrixFromArray( ndarr, ndarr.shape)
+        matview = itkPyVnl@PyVnlTypes@._GetVnlMatrixViewFromArray( ndarr, ndarr.shape)
 
         return matview
+
+    GetVnlMatrixViewFromArray = staticmethod(GetVnlMatrixViewFromArray)
+
+    def GetVnlMatrixFromArray(ndarr):
+        """Get a VNL Matrix from a NumPy array.
+
+        This is a deep copy of the NumPy array buffer and is completely safe without potential
+        side effects.
+        """
+
+        # perform deep copy of the array buffer
+        array_copy = numpy.array(ndarr)
+
+        vnl_matrix = itkPyVnl@PyVnlTypes@.GetVnlMatrixViewFromArray(array_copy)
+
+        # attaches the copy of the array to the matrix to avoid releasing memory
+        # when leaving current scope.
+        vnl_matrix._ndarr = array_copy
+        return vnl_matrix
 
     GetVnlMatrixFromArray = staticmethod(GetVnlMatrixFromArray)
 

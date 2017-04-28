@@ -26,7 +26,7 @@ namespace itk
 template<class TImage>
 PyObject *
 PyBuffer<TImage>
-::_GetArrayFromImage( ImageType * image)
+::_GetArrayViewFromImage( ImageType * image)
 {
   PyObject *                  memoryView    = NULL;
   Py_buffer                   pyBuffer;
@@ -70,7 +70,7 @@ PyBuffer<TImage>
 template<class TImage>
 const typename PyBuffer<TImage>::OutputImagePointer
 PyBuffer<TImage>
-::_GetImageFromArray( PyObject *arr, PyObject *shape, PyObject *numOfComponent)
+::_GetImageViewFromArray( PyObject *arr, PyObject *shape, PyObject *numOfComponent)
 {
   PyObject *                  shapeseq      = NULL;
   PyObject *                  item          = NULL;

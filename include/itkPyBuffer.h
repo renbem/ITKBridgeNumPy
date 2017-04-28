@@ -37,10 +37,10 @@ namespace itk
 
 /** \class PyBuffer
  *
- *  \brief Helper class for converting C buffers into python arrays.
+ *  \brief Helper class to get ITK image views into python arrays and back.
  *
  *  This class will receive a C buffer and create the equivalent python
- *  array. This permits passing image buffers into python arrays from
+ *  array view. This permits passing image buffers into python arrays from
  *  the NumPy python package.
  *
  *  \ingroup BridgeNumPy
@@ -71,12 +71,12 @@ public:
   /**
    * Get an Array with the content of the image buffer
    */
-  static PyObject * _GetArrayFromImage( ImageType * image);
+  static PyObject * _GetArrayViewFromImage( ImageType * image);
 
   /**
    * Get an ITK image from a Python array
    */
-  static const OutputImagePointer _GetImageFromArray( PyObject *arr, PyObject *shape, PyObject *numOfComponent);
+  static const OutputImagePointer _GetImageViewFromArray( PyObject *arr, PyObject *shape, PyObject *numOfComponent);
 
 protected:
 
