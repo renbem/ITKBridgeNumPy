@@ -75,7 +75,7 @@
 
         # attaches the copy of the array to the vector to avoid releasing memory
         # when leaving current scope.
-        vnl_vector.ndarr = array_copy
+        vnl_vector._ndarr = array_copy
         return vnl_vector
 
     GetVnlVectorFromArray = staticmethod(GetVnlVectorFromArray)
@@ -153,7 +153,7 @@
 
         # attaches the copy of the array to the matrix to avoid releasing memory
         # when leaving current scope.
-        vnl_matrix.ndarr = array_copy
+        vnl_matrix._ndarr = array_copy
         return vnl_matrix
 
     GetVnlMatrixFromArray = staticmethod(GetVnlMatrixFromArray)

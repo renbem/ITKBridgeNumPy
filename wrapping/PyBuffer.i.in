@@ -118,7 +118,7 @@
 
         # attaches the copy of the array to the image to avoid releasing memory
         # when leaving current scope.
-        image.ndarr = array_copy
+        image._ndarr = array_copy
         return image
 
     GetImageFromArray = staticmethod(GetImageFromArray)
