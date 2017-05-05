@@ -83,29 +83,30 @@ itk_wrap_class("itk::PyBuffer")
            ${PyBufferInterfaceTemp})
     endforeach(t)
   endforeach(d)
+  
+  # CovariantImage types (GradientEuler3DransformImageFilter)
+  foreach(d "3;18")
+    foreach(t "D")
+      itk_wrap_template("ICV${ITKM_${t}}${d}3"
+          "itk::Image< itk::CovariantVector< ${ITKT_${t}},${d} >,3 >") 
+      set(PyBufferTypes "ICV${ITKM_${t}}${d}3")
+      set(PixelType ${t})
+      configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/PyBuffer.i.in
+                      ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
+                      @ONLY)
+      file(READ ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
+           PyBufferInterfaceTemp)
+      file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i
+           ${PyBufferInterfaceTemp})
+    endforeach()
+  endforeach()
+  # 
+  # itk_wrap_template("ICV${ITKM_D}33"
+  #      "itk::Image< itk::CovariantVector< ${ITKT_D},3 >,3 >")
+  # itk_wrap_template("ICV${ITKM_D}183"
+  #      "itk::Image< itk::CovariantVector< ${ITKT_D},18 >,3 >")
 itk_end_wrap_class()
 
-# CovariantImage types (GradientEuler3DransformImageFilter)
-  # foreach(d "3;18")
-  #   foreach(t "D")
-  #     itk_wrap_template("ICV${ITKM_${t}}${d}3"
-  #         "itk::Image< itk::CovariantVector< ${ITKT_${t}},${d} >,3 >") 
-  #     set(PyBufferTypes "ICV${ITKM_${t}}${d}3")
-  #     set(PixelType ${t})
-  #     configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/PyBuffer.i.in
-  #                     ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
-  #                     @ONLY)
-  #     file(READ ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
-  #          PyBufferInterfaceTemp)
-  #     file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i
-  #          ${PyBufferInterfaceTemp})
-  #   endforeach()
-  # endforeach()
-  # # 
-  itk_wrap_template("ICV${ITKM_D}33"
-       "itk::Image< itk::CovariantVector< ${ITKT_D},3 >,3 >")
-  itk_wrap_template("ICV${ITKM_D}183"
-       "itk::Image< itk::CovariantVector< ${ITKT_D},18 >,3 >")
 
 # VNL vectors
 
