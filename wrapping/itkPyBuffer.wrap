@@ -89,15 +89,15 @@ itk_wrap_class("itk::PyBuffer")
     foreach(t "D")
       itk_wrap_template("ICV${ITKM_${t}}${d}3"
           "itk::Image< itk::CovariantVector< ${ITKT_${t}},${d} >,3 >") 
-      set(PyBufferTypes "ICV${ITKM_${t}}${d}3")
-      set(PixelType ${t})
-      configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/PyBuffer.i.in
-                      ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
-                      @ONLY)
-      file(READ ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
-           PyBufferInterfaceTemp)
-      file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i
-           ${PyBufferInterfaceTemp})
+      # set(PyBufferTypes "ICV${ITKM_${t}}${d}3")
+      # set(PixelType ${t})
+      # configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/PyBuffer.i.in
+      #                 ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
+      #                 @ONLY)
+      # file(READ ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
+      #      PyBufferInterfaceTemp)
+      # file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i
+      #      ${PyBufferInterfaceTemp})
     endforeach()
   endforeach()
   # 
