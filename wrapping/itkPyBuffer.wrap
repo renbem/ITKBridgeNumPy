@@ -49,8 +49,11 @@ itk_wrap_class("itk::PyBuffer")
                ${PyBufferInterfaceTemp})
         endif()
       endforeach(p)
+
       # Image Vector types
-      foreach(vec_dim ${ITK_WRAP_VECTOR_COMPONENTS})
+      # Dimension 18 is used for GradientEuler3DTransformImageFilter
+      UNIQUE(vector_dims "${ITK_WRAP_VECTOR_COMPONENTS};18")
+      foreach(vec_dim ${vector_dims})
         foreach(vec_type ${VectorTypes})
            if( DEFINED ITKM_I${vec_type}${vec_dim}${d} )
              itk_wrap_template("${ITKM_I${vec_type}${vec_dim}${d}}" "${ITKT_I${vec_type}${vec_dim}${d}}")
@@ -83,28 +86,6 @@ itk_wrap_class("itk::PyBuffer")
            ${PyBufferInterfaceTemp})
     endforeach(t)
   endforeach(d)
-  
-  # CovariantImage types (GradientEuler3DransformImageFilter)
-  itk_wrap_template("ICV${ITKM_D}33"
-       "itk::Image< itk::CovariantVector< ${ITKT_D},3 >,3 >")
-  itk_wrap_template("ICV${ITKM_D}183"
-       "itk::Image< itk::CovariantVector< ${ITKT_D},18 >,3 >")
-  # foreach(d "3;18")
-  #   foreach(t "D")
-  #     itk_wrap_template("ICV${ITKM_${t}}${d}3"
-  #         "itk::Image< itk::CovariantVector< ${ITKT_${t}},${d} >,3 >") 
-  #     # set(PyBufferTypes "ICV${ITKM_${t}}${d}3")
-  #     # set(PixelType ${t})
-  #     # configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/PyBuffer.i.in
-  #     #                 ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
-  #     #                 @ONLY)
-  #     # file(READ ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i.temp
-  #     #      PyBufferInterfaceTemp)
-  #     # file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/PyBuffer.i
-  #     #      ${PyBufferInterfaceTemp})
-  #   endforeach()
-  # endforeach()
-  # 
 itk_end_wrap_class()
 
 
