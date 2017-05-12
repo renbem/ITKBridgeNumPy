@@ -52,7 +52,8 @@ itk_wrap_class("itk::PyBuffer")
 
       # Image Vector types
       # Dimension 18 is used for GradientEuler3DTransformImageFilter
-      UNIQUE(vector_dims "${ITK_WRAP_VECTOR_COMPONENTS};18")
+      # Dimension 36 is used for GradientAffine3DTransformImageFilter
+      UNIQUE(vector_dims "${ITK_WRAP_VECTOR_COMPONENTS};18;36")
       foreach(vec_dim ${vector_dims})
         foreach(vec_type ${VectorTypes})
            if( DEFINED ITKM_I${vec_type}${vec_dim}${d} )
